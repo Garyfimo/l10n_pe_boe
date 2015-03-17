@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.actions.act_window" id="create_boe_wizard_action">
+			<field name="name">Add BoE</field>
+			<field name="res_model">l10n_pe.create.boe.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>		
+		</record>
+		<record model="ir.ui.view" id="create_boe_form_view">
+			<field name="name">Add boe form</field>
+			<field name="model">l10n_pe.create.boe.wizard</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Add boe" col="4" version="7.0">
+					<group colspan="2">
+						<field name="invoice_id" colspan="2"/>
+					</group>
+					<field name="boe_ids" nolabel="1" colspan="4">
+						<tree string="BOEs" editable="bottom">
+							<field name="invoice_by_boe"/>
+						</tree>
+					</field>
+					<footer>
+						<button type="special" special="cancel" string="Cancel" icon="gtk-cancel"/>
+						<button type="object" name="action_add_attendee" string="Add attendees" icon="gtk-ok" confirm="Are you sure you want to add those attendees?"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+		<menuitem name="Add BoE" parent="boe"
+	 id="create_boe_wizard_menu"
+	 action="create_boe_wizard_action"/>
+	</data>
+</openerp>

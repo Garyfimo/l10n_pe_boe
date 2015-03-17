@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.actions.act_window" id="boe_list_action_customer">
+			<field name="name">Bills of Exchange - customer</field>
+			<field name="res_model">l10n_pe.boe</field>
+			<field name="view_type">form</field>
+			<field name="context">{'default_customer':1,'default_supplier':0, 'search_default_customer':1}</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="boe_customer_form_view"/>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Create the first bill of exchange for a customer</p>
+			</field>
+		</record>
+		
+		
+		<record model="ir.ui.view" id="boe_customer_form_view">
+			<field name="name">boe.form.customer</field>
+			<field name="model">l10n_pe.boe</field>
+			<field name="arch" type="xml">
+				<form string="Bill of Exchange Form" version="7.0">
+					<header>						
+						<button name="action_confirm" type="object" string="Confirm" states="draft" class="oe_highlight" />
+						<button name="action_paid" type="object" string="Mark as paid" states="open" class="oe_highlight" />
+						<button name="action_cancel" type="object" string="Mark as cancelled" states="open" class="oe_highlight" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+					<group col="1">
+						<group col="2" colspan="2">
+							
+								<div class="oe_title">
+									<group colspan="4" col="4">
+										<field name="name"/>
+										<field name="partner_id" context="{'default_customer':1,'default_supplier':0,}" domain="[('customer','=','True'),]"/>
+										<field name="amount" placeholder="Amount"/>
+										<field name="date"/>
+										<field name="date_due"/>
+										<field name="journal_id" placeholder="Journal"/>
+										<field name="account_id" placeholder="Account"/>
+										<field name="period_id"/>
+									</group>
+									<div>
+                                    	<label for="amount_tax"/>
+                                    	<button name="button_update_amount" states="draft" type="object"
+                                        string="(update)" class="oe_link oe_edit_only" help="Update BOE's amount"/>
+                                		</div>
+								</div>
+						</group>
+						<group>
+							<notebook colspan="4" col="4">
+								<page string="Invoices">
+									<field name="invoice_by_boe_id" nolabel="1" widget="one2many_list" >
+										<tree string="Invoice Lines" editable="top">								
+											<field name="invoice_id" domain="[('state','=','open'),('partner_id','=',parent.partner_id)]" on_change="onchange_invoice(invoice_id)"/> 
+											<field name="amount"/>
+										</tree>
+									</field>
+								</page>
+								<page string="Avales">
+									<field name="partner_by_boe_id" nolabel="1" widget="one2many_list" >
+										<tree string="Aval Lines" editable="top">
+											<field name="partner_id" /> 
+										</tree>
+									</field>
+								</page>					
+							</notebook>
+						</group>
+					</group>
+				</sheet>	
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="bill_of_exchange_customer_tree_view">
+			<field name="name">boe.tree.customer</field>
+			<field name="model">l10n_pe.boe</field>
+			<field name="context">{'default_customer':1,'default_supplier':0}</field>
+			<field name="arch" type="xml">
+				<tree string="BoE Tree" colors="blue:state =='draft';black:state == 'open';gray:state == 'cancel'">
+					<field name="name"/>
+					<field name="partner_id"/>
+					<field name="amount"/>
+					<field name="date_due"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		<menuitem name="Letras de Clientes" id="bill_of_exchange_customer" parent="account.menu_finance_receivables" action="boe_list_action_customer"/>
+
+	</data>
+</openerp>
