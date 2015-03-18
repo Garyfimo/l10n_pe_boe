@@ -2,22 +2,11 @@
 <openerp>
 	<data>
 
-		<record model="ir.actions.act_window" id="boe_list_action_customer">
-			<field name="name">Bills of Exchange - customer</field>
-			<field name="res_model">l10n_pe.boe</field>
-			<field name="view_type">form</field>
-			<field name="context">{'default_customer':1,'default_supplier':0, 'search_default_customer':1}</field>
-			<field name="view_mode">tree,form</field>
-			<field name="view_id" ref="boe_customer_form_view"/>
-			<field name="help" type="html">
-				<p class="oe_view_nocontent_create">Create the first bill of exchange for a customer</p>
-			</field>
-		</record>
-		
 		
 		<record model="ir.ui.view" id="boe_customer_form_view">
 			<field name="name">boe.form.customer</field>
 			<field name="model">l10n_pe.boe</field>
+			<field name="sequence" eval="1"/>
 			<field name="arch" type="xml">
 				<form string="Bill of Exchange Form" version="7.0">
 					<header>						
@@ -37,7 +26,7 @@
 										<field name="amount" placeholder="Amount"/>
 										<field name="date"/>
 										<field name="date_due"/>
-										<field name="journal_id" placeholder="Journal"/>
+										<field name="journal_id" placeholder="Journal" domain="[('type','=','cash'),]"/>
 										<field name="account_id" placeholder="Account"/>
 										<field name="period_id"/>
 									</group>
@@ -72,10 +61,25 @@
 				</form>
 			</field>
 		</record>
+
+		<record model="ir.actions.act_window" id="boe_list_action_customer">
+			<field name="name">Bills of Exchange - customer</field>
+			<field name="res_model">l10n_pe.boe</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'default_customer':1,'default_supplier':0, 'search_default_customer':1}</field>
+			<field name="domain">[('partner_id.customer','=','True')]</field>
+			<field name="view_id" ref="boe_customer_form_view"/>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Create the first bill of exchange for a customer</p>
+			</field>
+		</record>
+		
 		<record model="ir.ui.view" id="bill_of_exchange_customer_tree_view">
 			<field name="name">boe.tree.customer</field>
 			<field name="model">l10n_pe.boe</field>
-			<field name="context">{'default_customer':1,'default_supplier':0}</field>
+			<field name="context">{'default_customer':1,'default_supplier':0, 'search_default_customer':1}</field>
+			<field name="sequence" eval="0"/>
 			<field name="arch" type="xml">
 				<tree string="BoE Tree" colors="blue:state =='draft';black:state == 'open';gray:state == 'cancel'">
 					<field name="name"/>
